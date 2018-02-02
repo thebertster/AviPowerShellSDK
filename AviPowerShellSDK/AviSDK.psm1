@@ -561,15 +561,15 @@ function Invoke-AviRestMethod {
         }
         {@("SendFailure", "ReceiveFailure") -contains $_} {
           #Underlying socket error (e.g. connection reset) - try a new session
-            if ($ReauthenticationCount -eq 0) {
-              #Try reauthenticating.
-              $ReauthenticationCount = 1
-              Write-Verbose "Connection failure ($($Exception.Status)) - will try to re-establish"
-            } else {
-              #Reauthentication failed - abort.
-              $PSCmdlet.ThrowTerminatingError($ErrorRecord)
-            }
-            break
+          if ($ReauthenticationCount -eq 0) {
+            #Try reauthenticating.
+            $ReauthenticationCount = 1
+            Write-Verbose "Connection failure ($($Exception.Status)) - will try to re-establish"
+          } else {
+            #Reauthentication failed - abort.
+            $PSCmdlet.ThrowTerminatingError($ErrorRecord)
+          }
+          break
         }
         "NameResolutionFailure" {
           #Name resolution failed - follow retry logic.
