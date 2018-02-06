@@ -96,7 +96,7 @@ class AviSession {
   $True to use https, $False to use http.
 
   .Parameter APIVersion
-  Avi API version (default="16.4.3").
+  Avi API version (default="16.4.4").
 
   .Parameter Tenant
   Name of tenant to bind the session to (default="admin").
@@ -164,7 +164,7 @@ function New-AviSession {
     
     [Parameter(Mandatory=$False)]
     [string]
-    $ApiVersion="16.4.3",
+    $ApiVersion="16.4.4",
     
     [Parameter(Mandatory=$False)]
     [string]
@@ -1216,6 +1216,9 @@ function New-AviObject {
   .Parameter ObjectData
   The data to be updated.
 
+  .Parameter PatchOperation
+  The patch operation (if missing, the patch operation must be specified in the object data.
+
   .Parameter Timeout
   Override the default timeout for the API call.
  
@@ -1253,6 +1256,10 @@ function Edit-AviObject {
     $ObjectData,
 
     [Parameter(Mandatory=$False)]
+    [string]
+    $PatchOperation,
+
+    [Parameter(Mandatory=$False)]
     [System.Object]
     $QueryParams,
         
@@ -1279,6 +1286,11 @@ function Edit-AviObject {
     } else {
       $Url += ("?" + (Get-AviQueryParams $QueryParams))
     }
+  }
+
+  if ($PatchOperation) {
+    $ObjectData = (@{$PatchOperation=$ObjectData})
+    Write-Host ($ObjectData | ConvertTo-Json)
   }
   
   $Response = Invoke-AviRestMethod -AviSession $AviSession -Url $Url -Method PATCH -Body $ObjectData -Timeout $Timeout -Tenant $Tenant -TenantUUID $TenantUUID -ApiVersion $ApiVersion

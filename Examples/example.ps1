@@ -20,11 +20,11 @@ $AviPool.servers  += $NewServer
 #Update the pool object (REST PUT)
 $AviPool = Set-AviObject -AviSession $AviSession -Object $AviPool
 
-#Use PATCH function to remove a pool member
+#Use PATCH function to remove a pool member with patch operation in object data
 $AviPoolPatched = Edit-AviObject -AviSession $AviSession -Url $AviPool.Url -ObjectData (@{delete=@{servers=@($NewServer)}})
 
-#Use PATCH function to disable a VS (need VS UUID)
-$AviVS = Edit-AviObject -AviSession $AviSession -Url "virtualservice/virtualservice-50735f52-6c4e-4bc4-b41d-08b0a641bf8f" -ObjectData (@{replace=@{enabled=$False}})
+#Use PATCH function to disable a VS (need VS UUID) specifying patch operation
+$AviVS = Edit-AviObject -AviSession $AviSession -Url "virtualservice/virtualservice-50735f52-6c4e-4bc4-b41d-08b0a641bf8f" -PatchOperation replace -ObjectData (@{enabled=$False})
 
 #Create a new pool object (REST POST)
 $NewPool = @{
