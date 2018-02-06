@@ -49,3 +49,7 @@ $Metrics = Get-AviObject -AviSession $AviSession -Url /analytics/metrics/virtual
 
 #Retrieve current healthscore for a VS
 $HealthScore = (Get-AviObject -AviSession $AviSession -Url /analytics/healthscore/virtualservice/virtualservice-bab4bd10-e2ea-4dce-9faa-eadcc467b889).series.data.value
+
+#Retrieve virtual services that use the System-HTTP application profile
+$SystemHTTP = (Get-AviObjectByName -AviSession $AviSession -ObjectType applicationprofile -Name System-HTTP -QueryParams @{fields=""}).uuid
+$VSList = Get-AviObjectsByType -AviSession $AviSession -ObjectType virtualservice -QueryParams @{refers_to="applicationprofile:$($SystemHTTP)"}
