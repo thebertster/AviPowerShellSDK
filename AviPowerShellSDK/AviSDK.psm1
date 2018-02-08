@@ -864,6 +864,12 @@ function Get-AviObject {
   .Parameter TenantUUID
   Override the default tenantUUID for the API call.
 
+  .Parameter AllMatches
+  Returns all matching objects rather than just the first.
+
+  .Parameter ReturnUUID
+  Returns the UUID of the matching object(s) rather than the object itself.
+
   .Parameter ApiVersion
   Override the default Api Version for the API call.
 
@@ -882,6 +888,11 @@ function Get-AviObject {
   Get-AviObjectByName -AviSession $Session -ObjectType virtualservice -Name avi-example-vs -AllMatches
 
   Retrieve all virtual services named "avi-example-vs" in all accessible tenants.
+
+  .Example
+  Get-AviObjectByName -AviSession $Session -ObjectType virtualservice -Name avi-example-vs -ReturnUUID
+
+  Retrieve the UUID of the service named "avi-example-vs".
 #>
 function Get-AviObjectByName {
   [CmdletBinding()]
@@ -918,6 +929,10 @@ function Get-AviObjectByName {
     [Parameter(Mandatory=$False)]
     [switch]
     $AllMatches,
+    
+    [Parameter(Mandatory=$False)]
+    [switch]
+    $ReturnUUID,
 
     [Parameter(Mandatory=$False)]
     [string]
@@ -926,8 +941,15 @@ function Get-AviObjectByName {
 
   $Url = ($ObjectType + "?name=" + $Name)
 
+  if ($ReturnUUID) {
+    $Url += "&fields="
+  }
+
   if ($QueryParams) {
     $QueryParams.Remove("name")
+    if ($ReturnUUID) {
+      $QueryParams.Remove("fields")
+    }
     $Url += ("&" + (Get-AviQueryParams $QueryParams))
   }
   
@@ -936,10 +958,15 @@ function Get-AviObjectByName {
   if ($Response) {
     if ($AllMatches) {
       Write-Verbose "Returning $($Response.count) result(s)"
-      return $Response.results
+      $Results = $Response.results
     } else {
       Write-Verbose "Returning result 1 of $($Response.count)"
-      return $Response.results[0]
+      $Results = $Response.results[0]
+    }
+    if ($ReturnUUID) {
+      return $Results.uuid
+    } else {
+      return $Results
     }
   } else {
     return $null
