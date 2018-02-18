@@ -10,8 +10,8 @@ Example Use:
 Create a module folder named "AviSDK" in one of the default PowerShell module locations
 (e.g. %userprofile%\Documents\WindowsPowerShell\Modules).
 
-Copy the AviSDK.psm1 and AviSDK.psd1 files into this module folder. This allows the module to be imported using:
+Copy the [AviSDK.psm1](https://github.com/thebertster/AviPowerShellSDK/blob/master/AviPowerShellSDK/AviSDK.psm1) and [AviSDK.psd1](https://github.com/thebertster/AviPowerShellSDK/blob/master/AviPowerShellSDK/AviSDK.psd1) files into this module folder. This allows the module to be imported using:
 
 Import-Module AviSDK
 
-Example scripts can be found in the Examples directory.
+Example scripts can be found in the [Examples](https://github.com/thebertster/AviPowerShellSDK/tree/master/Examples) directory.
